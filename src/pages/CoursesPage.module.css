@@ -1,0 +1,60 @@
+.courseList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.courseItem {
+  background-color: #fff;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.courseTitle {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.courseTeacher {
+  margin: 4px 0 0;
+  color: #6c757d;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.activeStatus {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.inactiveStatus {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.deleteButton {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+.deleteButton:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
