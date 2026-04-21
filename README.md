@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+Это и есть принцип единственной ответственности в действии.
+Практическое задание
+Роли пользователей
+В системе три роли:
+student — студент. Может просматривать учебные материалы и свой профиль. Не имеет доступа к управлению курсами и административным функциям.
+teacher — преподаватель. Может всё то же, что студент, плюс имеет доступ к управлению своими курсами. Не имеет доступа к административной панели.
+admin — администратор. Имеет доступ ко всем разделам без исключения.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Тестовые аккаунты
+admin@college.ru   / admin123   → role: 'admin'
+teacher@college.ru / teach123   → role: 'teacher'
+student@college.ru / study123   → role: 'student'
 
-Currently, two official plugins are available:
+Маршруты и доступ
+Маршрут
+Страница
+Кто имеет доступ
+/
+Главная
+Все, включая гостей
+/login
+Вход
+Только гости. Авторизованный пользователь перенаправляется на /profile
+/profile
+Профиль
+student, teacher, admin
+/courses
+Список курсов
+student, teacher, admin
+/courses/manage
+Управление курсами
+teacher, admin
+/admin
+Административная панель
+только admin
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Требования к объекту пользователя
+type UserRole = 'student' | 'teacher' | 'admin';
 
-## React Compiler
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: UserRole;
+  group?: string; // только для student, например 'ИС-23'
+};
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Требования к поведению
+При попытке зайти на маршрут без нужной роли — редирект на /. Например, student пытается открыть /courses/manage — его отправляет на главную, а не на /login, потому что он авторизован, просто прав недостаточно.
+При попытке неавторизованного пользователя открыть любой защищённый маршрут — редирект на /login.
+После входа пользователь попадает на /profile.
+После выхода — редирект на /login, данные из localStorage очищены.
+Что нужно показать при сдаче
+Зайти под каждым из трёх аккаунтов и показать, какие пункты навигации и страницы доступны
+Находясь под student, вручную ввести в адресную строку /courses/manage и /admin — показать что происходит
+Зайти под любым аккаунтом, нажать F5 — пользователь остаётся авторизованным
+Выйти, нажать F5 — пользователь не восстанавливается
+Показать в DevTools (Application → Local Storage) как выглядят сохранённые данные пользователя
